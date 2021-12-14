@@ -1,0 +1,21 @@
+@import "./vars";
+
+$font-dir: "/fonts/";
+
+@font-face {
+  font-family: "Teletactile";
+  src: url("#{$font-dir}Teletactile.ttf");
+  src: url("#{$font-dir}Teletactile.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: var(--palette-fg);
+  font-family: "Teletactile", sans-serif;
+  -webkit-overflow-scrolling: touch;
+}
