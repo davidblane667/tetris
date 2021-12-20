@@ -1,5 +1,5 @@
 <template>
-  <div class="cup">
+  <div class="cup-view">
     <ceil-row
       v-for="(item, index) of cupData"
       :key="`ceil-row-${index}`"
@@ -23,7 +23,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.cup {
+.cup-view {
+  display: grid;
+  grid-row-gap: 2px;
+  padding: 2px;
   border: 10px solid red;
   width: $cup-width;
   height: $cup-height;

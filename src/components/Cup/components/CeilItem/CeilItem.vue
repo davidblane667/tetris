@@ -1,5 +1,5 @@
 <template>
-  <div class="ceil-item"></div>
+  <div class="ceil-item" :style="{ 'background-color': ceilData.color }"></div>
 </template>
 
 <script lang="ts">
@@ -17,8 +17,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ceil-item {
-  width: calc(100% / 10);
+  width: 100%;
   height: 100%;
-  outline: 1px solid #000;
+  border: 1px solid #000;
 }
 </style>

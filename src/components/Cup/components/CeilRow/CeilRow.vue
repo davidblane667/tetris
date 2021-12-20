@@ -24,8 +24,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ceil-row {
-  display: flex;
-  justify-content: space-between;
-  height: calc(100% / 20);
+  display: grid;
+  grid-template-columns: repeat($column-count, 1fr);
+  height: 100%;
+  grid-column-gap: 2px;
 }
 </style>
