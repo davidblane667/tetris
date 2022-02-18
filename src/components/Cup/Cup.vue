@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, toRef, watch } from "vue";
 import config from "@/config";
 import { Cup } from "@/types";
 import CupView from "@/components/Cup/components/CupView";
@@ -11,7 +11,10 @@ import CupView from "@/components/Cup/components/CupView";
 export default defineComponent({
   name: "Cup",
   components: { CupView },
-  setup() {
+  props: {
+    gameIsPlaying: { type: Number, reqiured: true },
+  },
+  setup(props, { emit }) {
     const cupData = ref<Cup>([]);
     const currentRowIndex = ref(0);
     const currentCeilIndex = ref(Math.floor(config.columnCount / 2) - 1);
@@ -59,6 +62,7 @@ export default defineComponent({
               hasNext.value = false;
               if (currentRowIndex.value === 0) {
                 clearInterval(game.value);
+                emit("gameEnd");
               }
             }
             cupData.value[
@@ -93,11 +97,15 @@ export default defineComponent({
       }, 500);
     };
 
-    startGame();
-
     watch(currentRowIndex, (_, oldV) => {
       if (oldV < _) setFigure(true, oldV);
       setFigure();
+    });
+
+    watch(toRef(props, "gameIsPlaying"), (gameIsPlaying) => {
+      if (gameIsPlaying) {
+        startGame();
+      }
     });
 
     return {
