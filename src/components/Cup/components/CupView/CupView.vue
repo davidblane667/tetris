@@ -27,7 +27,8 @@ export default defineComponent({
   display: grid;
   grid-row-gap: 2px;
   padding: 2px;
-  border: 10px solid red;
+  border: 10px solid transparent;
+  outline: 1px solid black;
   width: $cup-width;
   height: $cup-height;
   margin: 0 auto;

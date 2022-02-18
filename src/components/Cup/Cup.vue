@@ -12,7 +12,7 @@ export default defineComponent({
   name: "Cup",
   components: { CupView },
   props: {
-    gameIsPlaying: { type: Number, reqiured: true },
+    gameIsPlaying: { type: Number, required: true },
   },
   setup(props, { emit }) {
     const cupData = ref<Cup>([]);
@@ -94,7 +94,7 @@ export default defineComponent({
         } else {
           addFigureToCup();
         }
-      }, 500);
+      }, 100);
     };
 
     watch(currentRowIndex, (_, oldV) => {
@@ -103,7 +103,8 @@ export default defineComponent({
     });
 
     watch(toRef(props, "gameIsPlaying"), (gameIsPlaying) => {
-      if (gameIsPlaying) {
+      if (gameIsPlaying === 1) {
+        getStartData();
         startGame();
       }
     });
