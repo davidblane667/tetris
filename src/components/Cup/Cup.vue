@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import config from "@/config";
-import { Ceil } from "@/types";
+import { Cup } from "@/types";
 import CupView from "@/components/Cup/components/CupView";
 
 export default defineComponent({
@@ -18,9 +18,9 @@ export default defineComponent({
   name: "Cup",
   components: { CupView },
   setup() {
-    const cupData = ref<Ceil[][]>([]);
+    const cupData = ref<Cup>([]);
     const currentRowIndex = ref(0);
-    const currentCeilIndex = ref(Math.floor(config.columnCount / 2));
+    const currentCeilIndex = ref(Math.floor(config.columnCount / 2) - 1);
 
     const getData = () => {
       const row = [];
@@ -40,27 +40,21 @@ export default defineComponent({
       const randomIndex = Math.floor(Math.random() * enumValues.length);
       return enumValues[randomIndex];
     };
-    getRandomFigure();
 
-    const setNewFigure = (figure: string) => {
-      switch (figure) {
-        case config.figures.O: {
-          cupData.value[currentRowIndex.value][currentCeilIndex.value].color =
-            "yellow";
-          cupData.value[currentRowIndex.value][
-            currentCeilIndex.value + 1
-          ].color = "yellow";
-          cupData.value[currentRowIndex.value + 1][
-            currentCeilIndex.value + 1
-          ].color = "yellow";
-          cupData.value[currentRowIndex.value + 1][
-            currentCeilIndex.value
-          ].color = "yellow";
-          break;
-        }
-      }
+    const setNewFigure = () => {
+      const figure = getRandomFigure();
+      figure?.data.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value > 0) {
+            cupData.value[currentRowIndex.value + y][
+              currentCeilIndex.value + x
+            ] = { color: "green" };
+          }
+        });
+      });
     };
-    setNewFigure(config.figures.O);
+
+    setNewFigure();
 
     return {
       cupData,
