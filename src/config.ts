@@ -10,6 +10,7 @@ enum FIGURES {
 const config = {
   rowCount: 20,
   columnCount: 10,
+  colors: ["green", "yellow", "red", "blue", "purple"],
   figures: [
     {
       name: FIGURES.O,
@@ -61,7 +62,7 @@ const config = {
       ],
     },
     {
-      name: FIGURES.J,
+      name: FIGURES.T,
       data: [
         [1, 1, 1],
         [0, 1, 0],

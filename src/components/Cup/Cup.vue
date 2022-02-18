@@ -10,8 +10,8 @@ import CupView from "@/components/Cup/components/CupView";
 
 export default defineComponent({
   /*
-  1. () Сделать отрисовку остальных фигур.
-  2. () Подумать над тем, как можно улучшить отрисовку, чтоб убрать портянку
+  1. (*) Сделать отрисовку остальных фигур.
+  2. (*) Подумать над тем, как можно улучшить отрисовку, чтоб убрать портянку
   3. () Добавить генерацию цветов.
   4. () В функцию setNewFigure добавить сгенеренный цвет
    */
@@ -21,6 +21,7 @@ export default defineComponent({
     const cupData = ref<Cup>([]);
     const currentRowIndex = ref(0);
     const currentCeilIndex = ref(Math.floor(config.columnCount / 2) - 1);
+    const currentFigure = ref("");
 
     const getData = () => {
       const row = [];
@@ -41,14 +42,21 @@ export default defineComponent({
       return enumValues[randomIndex];
     };
 
+    const getRandomColor = () => {
+      const randomIndex = Math.floor(Math.random() * config.colors.length);
+      return config.colors[randomIndex];
+    };
+
     const setNewFigure = () => {
       const figure = getRandomFigure();
+      const color = getRandomColor();
+      currentFigure.value = figure.name;
       figure?.data.forEach((row, y) => {
         row.forEach((value, x) => {
           if (value > 0) {
             cupData.value[currentRowIndex.value + y][
               currentCeilIndex.value + x
-            ] = { color: "green" };
+            ] = { color };
           }
         });
       });
