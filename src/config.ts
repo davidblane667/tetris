@@ -7,7 +7,13 @@ enum FIGURES {
   J = "J",
   T = "T",
 }
-const config = {
+interface Config {
+  rowCount: number;
+  columnCount: number;
+  colors: string[];
+  figures: Array<{ name: string; data: any }>;
+}
+const config: Config = {
   rowCount: 20,
   columnCount: 10,
   colors: ["green", "yellow", "red", "blue", "purple"],

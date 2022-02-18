@@ -3,18 +3,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import config from "@/config";
 import { Cup } from "@/types";
 import CupView from "@/components/Cup/components/CupView";
 
 export default defineComponent({
-  /*
-  1. (*) Сделать отрисовку остальных фигур.
-  2. (*) Подумать над тем, как можно улучшить отрисовку, чтоб убрать портянку
-  3. () Добавить генерацию цветов.
-  4. () В функцию setNewFigure добавить сгенеренный цвет
-   */
   name: "Cup",
   components: { CupView },
   setup() {
@@ -22,8 +16,9 @@ export default defineComponent({
     const currentRowIndex = ref(0);
     const currentCeilIndex = ref(Math.floor(config.columnCount / 2) - 1);
     const currentFigure = ref("");
+    const currentColor = ref("");
 
-    const getData = () => {
+    const getStartData = () => {
       const row = [];
       for (let i = 0; i < config.rowCount; i++) {
         const ceil = [];
@@ -34,7 +29,7 @@ export default defineComponent({
       }
       cupData.value = row;
     };
-    getData();
+    getStartData();
 
     const getRandomFigure = () => {
       const enumValues = Object.values(config.figures);
@@ -47,22 +42,46 @@ export default defineComponent({
       return config.colors[randomIndex];
     };
 
-    const setNewFigure = () => {
-      const figure = getRandomFigure();
-      const color = getRandomColor();
-      currentFigure.value = figure.name;
-      figure?.data.forEach((row, y) => {
-        row.forEach((value, x) => {
+    const setFigure = (
+      clear?: boolean,
+      oldRowIndex?: number,
+      oldCeilIndex?: number
+    ) => {
+      const figure = config.figures.find((i) => i.name === currentFigure.value);
+      figure?.data.forEach((row: any, y: number) => {
+        row.forEach((value: number, x: number) => {
           if (value > 0) {
-            cupData.value[currentRowIndex.value + y][
-              currentCeilIndex.value + x
-            ] = { color };
+            cupData.value[oldRowIndex ?? currentRowIndex.value + y][
+              oldCeilIndex ?? currentCeilIndex.value + x
+            ] = clear ? { color: null } : { color: currentColor.value };
           }
         });
       });
     };
 
-    setNewFigure();
+    const addFigureToCup = () => {
+      currentRowIndex.value = 0;
+      currentCeilIndex.value = Math.floor(config.columnCount / 2) - 1;
+      currentFigure.value = getRandomFigure().name;
+      currentColor.value = getRandomColor();
+      setFigure();
+    };
+
+    const startGame = () => {
+      addFigureToCup();
+      setInterval(() => {
+        if (currentRowIndex.value < config.rowCount) {
+          currentRowIndex.value++;
+        }
+      }, 3000);
+    };
+
+    startGame();
+
+    watch(currentRowIndex, (_, oldV) => {
+      setFigure(true, oldV);
+      setFigure();
+    });
 
     return {
       cupData,
