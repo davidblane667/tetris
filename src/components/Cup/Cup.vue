@@ -17,6 +17,8 @@ export default defineComponent({
     const currentCeilIndex = ref(Math.floor(config.columnCount / 2) - 1);
     const currentFigure = ref("");
     const currentColor = ref("");
+    const hasNext = ref(true);
+    const game = ref<number | undefined>(undefined);
 
     const getStartData = () => {
       const row = [];
@@ -42,18 +44,30 @@ export default defineComponent({
       return config.colors[randomIndex];
     };
 
-    const setFigure = (
-      clear?: boolean,
-      oldRowIndex?: number,
-      oldCeilIndex?: number
-    ) => {
+    const setFigure = (clear?: boolean, oldRowIndex?: number) => {
       const figure = config.figures.find((i) => i.name === currentFigure.value);
       figure?.data.forEach((row: any, y: number) => {
         row.forEach((value: number, x: number) => {
           if (value > 0) {
-            cupData.value[oldRowIndex ?? currentRowIndex.value + y][
-              oldCeilIndex ?? currentCeilIndex.value + x
-            ] = clear ? { color: null } : { color: currentColor.value };
+            const nextRow = cupData.value[currentRowIndex.value + y + 1];
+            if (
+              !clear &&
+              (!nextRow ||
+                (nextRow[currentCeilIndex.value + x].color !== null &&
+                  (!figure?.data[y + 1] || !figure?.data[y + 1][x])))
+            ) {
+              hasNext.value = false;
+              if (currentRowIndex.value === 0) {
+                clearInterval(game.value);
+              }
+            }
+            cupData.value[
+              oldRowIndex !== undefined
+                ? oldRowIndex + y
+                : currentRowIndex.value + y
+            ][currentCeilIndex.value + x] = clear
+              ? { color: null }
+              : { color: currentColor.value };
           }
         });
       });
@@ -61,6 +75,7 @@ export default defineComponent({
 
     const addFigureToCup = () => {
       currentRowIndex.value = 0;
+      hasNext.value = true;
       currentCeilIndex.value = Math.floor(config.columnCount / 2) - 1;
       currentFigure.value = getRandomFigure().name;
       currentColor.value = getRandomColor();
@@ -69,17 +84,19 @@ export default defineComponent({
 
     const startGame = () => {
       addFigureToCup();
-      setInterval(() => {
-        if (currentRowIndex.value < config.rowCount) {
+      game.value = setInterval(() => {
+        if (hasNext.value) {
           currentRowIndex.value++;
+        } else {
+          addFigureToCup();
         }
-      }, 3000);
+      }, 500);
     };
 
     startGame();
 
     watch(currentRowIndex, (_, oldV) => {
-      setFigure(true, oldV);
+      if (oldV < _) setFigure(true, oldV);
       setFigure();
     });
 
